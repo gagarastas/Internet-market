@@ -1,0 +1,86 @@
+div.hr {
+margin-top:70px;
+margin-left:50px;
+margin-right:50px;
+margin-bottom:30px;
+display: inline-block;
+line-height: 1
+}
+
+
+div p.zagolovok {
+border: 1px solid black;
+border-radius: 15px;
+padding-left: 35px;
+padding-bottom: 10px;
+padding-top: 5px;
+margin-top: 20px;
+font-weight:bold;
+font-size: x-large;
+}
+
+div p {
+font-size: large;
+}
+div p.saler {
+font-style:italic;
+font-size: normal;
+}
+
+div.sdvig_price p {
+display:inline-block;
+}
+div.sdvig_price p.sdvig_vpravo{
+margin-left: 70px;
+font-size: x-large;
+}
+img.ramka {
+border: 3px solid #5F9EA0;
+}
+
+div.verh{
+padding-top: 5px;
+padding-left:15px;
+}
+
+
+div.product div{
+display:inline-block
+}
+
+div.product div.otstup{
+padding-left:100px;
+}
+
+div p#name{
+font-weight:bold;
+font-size: 50px;
+}
+
+div.product p.category{
+    font-style:italic;
+    font-size:35px;
+    padding-left:40px;
+}
+
+div.product p.category_p{
+    font-size:35px;
+
+}
+
+div.product p.text{
+    font-style:italic;
+    padding-left:100px;
+    font-size:35px;
+}
+div.ramka_otstup img{
+border: 3px solid #5F9EA0;
+margin-bottom:170px;
+}
+
+div.fixed {
+position:fixed;
+width:100%;
+}
+
+

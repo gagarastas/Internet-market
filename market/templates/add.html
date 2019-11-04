@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>adding</title>
+    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.min.css">
+    <script type="text/javascript" src="/static/jquery/jquery-3.4.1.min.js"></script>
+    <script type="text/javascript" src="/static/bootstrap/js/bootstrap.min.js"></script>
+</head>
+<body>
+<form action="{% url 'add' %}" method="post" enctype="multipart/form-data">
+    {%csrf_token%}
+  <div class="form-group">
+    <label for="name">Введите название товара</label>
+    <input class="form-control form-control-lg" type="text" name="name" id="name" required>
+  </div>
+     <div class="form-group">
+    <label for="exampleFormControlSelect1">Выберите категорию</label>
+    <select class="form-control" name="category" id="exampleFormControlSelect1">
+      <option>Ноутбук</option>
+      <option>Планшет</option>
+      <option>Телефон</option>
+    </select><div/>
+    <div class="form-group">
+    <label for="opisanie">Введите описание товара</label>
+        <input class="form-control form-control-lg" type="text" name="opisanie" id="opisanie" required>
+
+  </div>
+    <div class="form-group">
+    <label for="price">Введите цену</label>
+    <input class="form-control form-control-lg" type="number" name="price" id="price" required>
+  </div>
+         <div class="form-group">
+    <label for="file">Фотография товара</label>
+    <input type="file" name="file" class="form-control-file" id="file">
+  </div>
+  <button type="submit" class="btn btn-primary">Добавить товар</button>
+</form>
+</body>
+</html>

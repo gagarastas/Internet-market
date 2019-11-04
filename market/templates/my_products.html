@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>my products</title>
+    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.min.css">
+    <script type="text/javascript" src="/static/jquery/jquery-3.4.1.min.js"></script>
+    <script type="text/javascript" src="/static/bootstrap/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="/static/css/style.css">
+    {%load static%}
+</head>
+<body bgcolor="#000" background="{%static 'image/49567e0d7108148f8ba0e130fdcafb91.jpg'%}">
+<div class="fixed">
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+        <a class="nav-link" href="{%url 'main_page' 1%}">На главную <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item active">
+          {%if my_prod.number%}
+        <a class="nav-link" href="{%url 'my_products' my_prod.number 0%}">Все мои товары <span class="sr-only">(current)</span></a>
+          {%endif%}
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Категория
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            {%if filter%}
+
+                <a class="dropdown-item" href="{%url 'my_products' my_prod.number 1%}?q={{filter}}">Телефоны</a>
+                <a class="dropdown-item" href="{%url 'my_products' my_prod.number 2%}?q={{filter}}">Планшеты</a>
+                <a class="dropdown-item" href="{%url 'my_products' my_prod.number 3%}?q={{filter}}">Компьютеры</a>
+            {%else%}
+                <a class="dropdown-item" href="{%url 'my_products' my_prod.number 1%}">Телефоны</a>
+                <a class="dropdown-item" href="{%url 'my_products' my_prod.number 2%}">Планшеты</a>
+                <a class="dropdown-item" href="{%url 'my_products' my_prod.number 3%}">Компьютеры</a>
+            {%endif%}
+        </div>
+      </li>
+    </ul>
+
+
+     <form class="form-inline my-2 my-lg-0">
+      <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="q">
+      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+    </form>
+
+
+  </div>
+</nav>
+    </div>
+
+
+{%if str%}
+<p>{{str}}</p>
+{%else%}
+{%for prod in my_prod%}
+
+    <div class="hr" id="My_dell{{prod.pk}}">
+   {%if prod.image%}
+    <img class="ramka" src="{{ MEDIA_URL }}{{prod.image.url}}" height="200px">
+    {%endif%}
+    <p class="zagolovok">{{prod.name}}</p>
+        <div class="sdvig_price">
+    <p>{{prod.category}}<p/>
+    <p class="sdvig_vpravo">{{prod.price}} рублей</p>
+        </div>
+    <p class="saler">Продавец: {{prod.saler}}</p>
+        <a class="btn btn-secondary" href="{%url 'edit' prod.pk%}">изменить</a>
+        <button class="btn btn-secondary" id="My_del{{prod.pk}}">удалить</button>
+    <br><div class="verh" ><a class="btn btn-primary " href="{%url 'product' prod.pk%}" role="button">перейти к товару</a></div>
+    </div>
+
+
+<script>
+        function fncBefore(){
+            console.log("deleting");
+        };
+        function fncSuccess(data){
+            console.log(data.dat);
+            $('div#My_dell'+data.dat).remove();
+        };
+
+        $('button#My_del{{prod.pk}}').bind("click",function(){
+            $.ajax({
+                url:"{%url 'My_del' prod.pk%}",
+                type:"POST",
+                data:({csrfmiddlewaretoken:'{{csrf_token}}'}),
+                dataType:"json",
+                beforeSend: fncBefore,
+                success: fncSuccess
+            })
+
+        })
+
+    </script>
+{%endfor%}
+{%endif%}
+{%if my_prod.paginator.count%}
+<div class="sdvig">
+<nav aria-label="Page navigation example">
+  <ul class="pagination">
+      {%if my_prod.has_previous%}
+        {%if filter%}
+                <li class="page-item"><a class="page-link" href="{%url 'my_products' my_prod.previous_page_number pk%}?q={{filter}}">Назад</a></li>
+
+            {%else%}
+             <li class="page-item"><a class="page-link" href="{%url 'my_products' my_prod.previous_page_number pk%}">Назад</a></li>
+        {%endif%}
+      {%else%}
+        <li class="page-item disabled">
+             <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Назад</a>
+        </li>
+      {%endif%}
+
+      {%for page in my_prod.paginator.page_range%}
+        {%if page == my_prod.number%}
+            <li class="page-item active" aria-current="page">
+            <a class="page-link" href="#">{{page}} <span class="sr-only">(current)</span></a>
+
+        {%elif filter%}
+            <li class="page-item"><a class="page-link" href="{%url 'my_products' page pk%}?q={{filter}}">{{page}}</a></li>
+
+        {%else%}
+            <li class="page-item"><a class="page-link" href="{%url 'my_products' page pk%}">{{page}}</a></li>
+        {%endif%}
+
+      {%endfor%}
+
+      {%if my_prod.has_next%}
+        {%if filter%}
+                <li class="page-item"><a class="page-link" href="{%url 'my_products' my_prod.next_page_number pk%}?q={{filter}}">Вперед</a></li>
+
+            {%else%}
+             <li class="page-item"><a class="page-link" href="{%url 'my_products' my_prod.next_page_number pk%}">Вперед</a></li>
+        {%endif%}
+        {%else%}
+            <li class="page-item disabled">
+                <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Вперед</a>
+             </li>
+      {%endif%}
+
+  </ul>
+</nav>
+    </div>
+{%endif%}
+
+</body>
+</html>

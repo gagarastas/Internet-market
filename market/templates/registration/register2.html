@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Registration</title>
+    <title>login please</title>
+    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.min.css">
+    <script type="text/javascript" src="/static/jquery/jquery-3.4.1.min.js"></script>
+    <script type="text/javascript" src="/static/bootstrap/js/bootstrap.min.js"></script>
+</head>
+<body>
+<form style="margin-top:10px" id="form" >
+    {%csrf_token%}
+  <div class="form-group">
+    <label style="font-size:22px; margin-left:15px" for="username">Введите логин:</label>
+    <input class="form-control form-control-lg" type="text" name="username" id="username" >
+
+    <div id ="errorsUsername" class="alert alert-warning" role="alert"></div>
+  </div>
+
+    <div class="form-group">
+    <label style="font-size:22px; margin-left:15px" for="email">Введите электронную почту:</label>
+    <input class="form-control form-control-lg" type="email" name="email" id="email" >
+
+    <div id ="errorsEmail" class="alert alert-warning" role="alert"></div>
+  </div>
+
+  <div class="form-group">
+    <label style="font-size:22px; margin-left:15px"  for="password">Введите пароль:</label>
+
+    <input type="password" class="form-control" name="password" id="password" >
+
+    <div id ="errorsPassword" class="alert alert-warning" role="alert"></div>
+</div>
+
+     <div class="form-group">
+    <label style="font-size:22px; margin-left:15px"  for="password2">Повторите пароль:</label>
+      <br/>
+    <input type="password" class="form-control" name="password2" id="password2" >
+      <br/>
+     <div id ="errorsPassword2" class="alert alert-warning" role="alert"></div>
+</div>
+
+  <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
+
+</form>
+<script>
+function Before(){
+    $('div#errorsUsername').hide();
+    $('div#errorsPassword').hide();
+    $('div#errorsEmail').hide();
+    $('div#errorsPassword2').hide();
+    $('input#username').removeClass('is-invalid');
+    $('input#password').removeClass('is-invalid');
+    $('input#email').removeClass('is-invalid');
+    $('input#password2').removeClass('is-invalid');
+    if($('input#username').val()=='')
+        {console.log('пустое поле')
+
+        }
+};
+function Success(errors){
+
+    if(errors.username=='Correct'){
+        $('div#errorsUsername').removeClass('alert alert-warning');
+        $('div#errorsUsername').addClass('alert alert-info');
+        $('div#errorsUsername').text('Correct');
+        $('div#errorsUsername').show();
+        $('input#username').removeClass('is-invalid');
+    }
+    else {
+        $('div#errorsUsername').removeClass('alert alert-info');
+        $('div#errorsUsername').addClass('alert alert-warning');
+        $('div#errorsUsername').show();
+        $('div#errorsUsername').text(errors.username);
+        $('input#username').addClass('is-invalid');
+
+    }
+    if(errors.password=='Correct'){
+        $('div#errorsPassword').removeClass('alert alert-warning');
+        $('div#errorsPassword').addClass('alert alert-info');
+        $('div#errorsPassword').text('Correct');
+        $('div#errorsPassword').show();
+        $('input#password').removeClass('is-invalid');
+    }
+    else {
+        $('div#errorsPassword').removeClass('alert alert-info');
+        $('div#errorsPassword').addClass('alert alert-warning');
+        $('div#errorsPassword').show();
+        $('div#errorsPassword').text(errors.password);
+        $('input#password').addClass('is-invalid');
+
+    }
+     if(errors.password2=='Correct'){
+        $('div#errorsPassword2').removeClass('alert alert-warning');
+        $('div#errorsPassword2').addClass('alert alert-info');
+        $('div#errorsPassword2').text('Correct');
+        $('div#errorsPassword2').show();
+        $('input#password2').removeClass('is-invalid');
+    }
+    else {
+        $('div#errorsPassword2').removeClass('alert alert-info');
+        $('div#errorsPassword2').addClass('alert alert-warning');
+        $('div#errorsPassword2').show();
+        $('div#errorsPassword2').text(errors.password2);
+        $('input#password2').addClass('is-invalid');
+
+    }
+     if(errors.email=='Correct'){
+        $('div#errorsEmail').removeClass('alert alert-warning');
+        $('div#errorsEmail').addClass('alert alert-info');
+        $('div#errorsEmail').text('Correct');
+        $('div#errorsEmail').show();
+        $('input#email').removeClass('is-invalid');
+    }
+    else {
+        $('div#errorsEmail').removeClass('alert alert-info');
+        $('div#errorsEmail').addClass('alert alert-warning');
+        $('div#errorsEmail').show();
+        $('div#errorsEmail').text(errors.email);
+        $('input#email').addClass('is-invalid');
+
+    }
+
+
+    if((errors.username=='Correct')&&(errors.password=='Correct')&&(errors.password2=='Correct')&&(errors.email=='Correct'))
+    {
+
+        location.href = '{%url 'main_page' 1%}';
+    }
+
+
+};
+
+$(document).ready(function(){
+    $('div#errorsUsername').hide();
+    $('div#errorsPassword').hide();
+    $('div#errorsEmail').hide();
+    $('div#errorsPassword2').hide();
+    $('#form').bind('submit',function(event){
+        event.preventDefault();
+        $.ajax({
+            url:"{%url 'register2'%}",
+            type:"POST",
+            data:({csrfmiddlewaretoken:'{{csrf_token}}',username:$('input#username').val(),email:$('input#email').val(),password:$('input#password').val(),password2:$('input#password2').val()}),
+            beforeSend: Before,
+            success: Success
+        })
+    })
+
+})
+</script>
+</body>
+</html>

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Мои товары</title>
+    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.min.css">
+    <script type="text/javascript" src="/static/jquery/jquery-3.4.1.min.js"></script>
+    <script type="text/javascript" src="/static/bootstrap/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="/static/css/style.css">
+    {%load static%}
+</head>
+<body bgcolor="#000" background="{%static 'image/49567e0d7108148f8ba0e130fdcafb91.jpg'%}">
+<div class="fixed">
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <a class="nav-link" href="{%url 'main_page' 1%}">Все товары <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">вы вошли как:
+            {%if username%}
+            {{username}}
+            {%else%}
+            Гость
+            {%endif%}
+        </a>
+      </li>
+        <li class="nav-item">
+            {%if username%}
+                <a class="nav-link" href="{%url 'logout'%}">Выйти</a>
+            {%else%}
+                <a class="nav-link" href="{%url 'login'%}">Войти как пользователь</a>
+            {%endif%}
+      </li>
+        {%if not username %}
+            <li class="nav-item">
+                <a class="nav-link" href="{%url 'register2'%}"> Зарегистрироваться</a>
+            </li>
+        {%endif%}
+    </ul>
+
+  </div>
+</nav>
+    </div>
+
+
+    {%for prod in filter_products%}
+    <div class="hr" id="{{prod.product.pk}}">
+         <img class="ramka" src="{{ MEDIA_URL }}{{prod.product.image.url}}" height="200px">
+        <p class="zagolovok">{{prod.product.name}}</p>
+        <div class="sdvig_price">
+        <p>{{prod.product.category}}</p>
+        <p class="sdvig_vpravo">{{prod.product.price}} рублей</p>
+        </div>
+        <p class="saler">Продавец: {{prod.product.saler}}</p>
+        <a class="btn btn-primary" href="{%url 'product' prod.product.pk%}" role="button">перейти к товару</a>
+        <a class="btn btn-primary" href="#" role="button">Купить</a>
+        <div class="verh"><button class="btn btn-secondary" id="Del{{prod.product.pk}}" role="button">Удалить из корзины</button></div>
+
+        </div>
+
+    <script>
+        function fncBefore(){
+            console.log("deleting");
+        };
+        function fncSuccess(data){
+            console.log(data.dat);
+            $('div#'+data.dat).remove();
+        };
+
+        $('button#Del{{prod.product.pk}}').bind("click",function(){
+            $.ajax({
+                url:"{%url 'Del' prod.product.pk%}",
+                type:"POST",
+                data:({csrfmiddlewaretoken:'{{csrf_token}}'}),
+                dataType:"json",
+                beforeSend: fncBefore,
+                success: fncSuccess
+            })
+
+        })
+
+    </script>
+
+
+    {%endfor%}
+</body>
+</html>

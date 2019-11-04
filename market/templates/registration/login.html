@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>login please</title>
+    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.min.css">
+    <script type="text/javascript" src="/static/jquery/jquery-3.4.1.min.js"></script>
+    <script type="text/javascript" src="/static/bootstrap/js/bootstrap.min.js"></script>
+</head>
+<body>
+<form style="margin-top:35px" id="form" >
+    {%csrf_token%}
+  <div class="form-group">
+    <label style="font-size:22px; margin-left:15px" for="username">Введите логин:</label>
+    <input class="form-control form-control-lg" type="text" name="username" id="username" >
+  </div>
+  <div class="form-group">
+    <label style="font-size:22px; margin-left:15px"  for="password">Введите пароль:</label>
+      <br/>
+    <input type="password" class="form-control" name="password" id="password" >
+      <br/>
+    <div id ="error" class="alert alert-warning" role="alert"></div>
+  </div>
+  <button type="submit" class="btn btn-primary">Вход</button>
+    <a class="btn btn-secondary" href="{%url 'register2' %}">Зарегистрироватсья</a>
+</form>
+
+<script>
+
+function fncBefore(){
+     $('div#error').hide();
+    $('input#username').removeClass('is-invalid');
+    $('input#password').removeClass('is-invalid');
+
+    };
+function fncSuccess(data){
+     console.log(data.dat);
+     if(data.dat!='unknown user'){
+        location.href = '{%url 'main_page' 1%}'}
+       else {
+        $('div#error').text('Неправильный логин или пароль');
+        $('input#username').addClass('is-invalid');
+        $('input#password').addClass('is-invalid');
+        $('div#error').show();
+       }
+    };
+$(document).ready(function(){
+    $('div#error').hide();
+
+$('#form').bind('submit',function(event){
+    event.preventDefault();
+    $.ajax({
+    url:"{%url 'login'%}",
+    type:"POST",
+    data:({csrfmiddlewaretoken:'{{csrf_token}}',username:$('input#username').val(),password:$('input#password').val()}),
+    beforeSend: fncBefore,
+    success: fncSuccess
+    })
+});
+})
+</script>
+
+
+</body>
+</html>

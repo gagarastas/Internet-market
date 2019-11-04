@@ -1,0 +1,186 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>market</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+    <script type="text/javascript" src="/static/jquery/jquery-3.4.1.min.js"></script>
+    <script type="text/javascript" src="/static/bootstrap/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+
+</head>
+<body bgcolor="#000" background="{%static 'image/49567e0d7108148f8ba0e130fdcafb91.jpg'%}">
+<div class="fixed">
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+          {%if stuff.number%}
+        <a class="nav-link" href="{%url 'main_page' stuff.number%}">Все товары <span class="sr-only">(current)</span></a>
+          {%endif%}
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{%url 'korzina'%}">Корзина</a>
+      </li>
+        {%if username%}
+        <li class="nav-item">
+        <a class="nav-link" href="{%url 'add'%}">Добавить товар</a>
+      </li>
+        <li class="nav-item">
+        <a class="nav-link" href="{%url 'my_products' 1 0%}">Мои товары</a>
+      </li>
+        {%endif%}
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Категория
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            {%if filter%}
+                <a class="dropdown-item" href="{%url 'category' pk=0 number_page=stuff.number%}?q={{filter}}">Все</a>
+                <a class="dropdown-item" href="{%url 'category' pk=1 number_page=stuff.number%}?q={{filter}}">Телефоны</a>
+                <a class="dropdown-item" href="{%url 'category' pk=2 number_page=stuff.number%}?q={{filter}}">Планшеты</a>
+                <a class="dropdown-item" href="{%url 'category' pk=3 number_page=stuff.number%}?q={{filter}}">Компьютеры</a>
+            {%else%}
+                 <a class="dropdown-item" href="{%url 'category' pk=0 number_page=stuff.number%}">Все</a>
+                <a class="dropdown-item" href="{%url 'category' pk=1 number_page=stuff.number%}">Телефоны</a>
+                <a class="dropdown-item" href="{%url 'category' pk=2 number_page=stuff.number%}">Планшеты</a>
+                <a class="dropdown-item" href="{%url 'category' pk=3 number_page=stuff.number%}">Компьютеры</a>
+            {%endif%}
+        </div>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">вы вошли как:
+            {%if username%}
+            {{username}}
+            {%else%}
+            Гость
+            {%endif%}
+        </a>
+      </li>
+        <li class="nav-item">
+            {%if username%}
+                <a class="nav-link" href="{%url 'logout'%}">Выйти</a>
+            {%else%}
+                <a class="nav-link" href="{%url 'login'%}">Войти как пользователь</a>
+            {%endif%}
+      </li>
+        {%if not username %}
+            <li class="nav-item">
+                <a class="nav-link" href="{%url 'register2'%}"> Зарегистрироваться</a>
+            </li>
+        {%endif%}
+    </ul>
+
+     <form class="form-inline my-2 my-lg-0">
+      <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="q">
+      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+    </form>
+
+
+  </div>
+</nav>
+    </div>
+
+
+{%for s in stuff%}
+<div class="hr">
+   {%if s.image%}
+    <img class="ramka" src="{{ MEDIA_URL }}{{s.image.url}}" height="200px">
+    {%endif%}
+    <p class="zagolovok">{{s.name}}</p>
+    <div class="sdvig_price">
+        <p>{{s.category}}<p/>
+        <p class="sdvig_vpravo">{{s.price}} рублей</p>
+    </div>
+    <p class="saler">Продавец: {{s.saler}}</p>
+    <button class="btn btn-secondary" id="add_to_korz{{s.pk}}" data-dataname="{{s.pk}}">добавить в корзину</button>
+
+    <a class="btn btn-primary" href="{%url 'product' s.pk%}" role="button">перейти к товару</a>
+
+    <script>
+        function fncSuccess(data){
+        console.log(data.dat);
+        if(data.dat==='heh'){
+            alert("зарегистрируйтесь или войдите, чтобы добавлять товары в корзину")
+            }
+        else{
+            $('button#add_to_korz'+data.dat).attr('class','btn btn-success');
+            $('button#add_to_korz'+data.dat).text('Добавлено');
+            }
+
+    };
+    function fncBefore(){
+        console.log("starting");
+
+     };
+
+    $('button#add_to_korz{{s.pk}}').bind('click',function(){
+        $.ajax({
+            url:"{%url 'add_to_korz' s.pk%}",
+            type:"POST",
+            data:({csrfmiddlewaretoken:'{{csrf_token}}'}),
+            dataType:"json",
+            beforeSend: fncBefore,
+            success: fncSuccess
+        })
+    })
+    </script>
+
+</div>
+{%endfor%}
+
+<nav aria-label="Page navigation example">
+  <ul class="pagination">
+      {%if stuff.has_previous%}
+        {%if filter%}
+                <li class="page-item"><a class="page-link" href="{%url 'main_page' stuff.previous_page_number%}?q={{filter}}">Назад</a></li>
+            {%elif pk%}
+                <li class="page-item"><a class="page-link" href="{%url 'category' pk=pk number_page=stuff.previous_page_number%}">Назад</a></li>
+            {%else%}
+             <li class="page-item"><a class="page-link" href="{%url 'main_page' stuff.previous_page_number%}">Назад</a></li>
+        {%endif%}
+      {%else%}
+        <li class="page-item disabled">
+             <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Назад</a>
+        </li>
+      {%endif%}
+
+      {%for page in stuff.paginator.page_range%}
+        {%if page == stuff.number%}
+            <li class="page-item active" aria-current="page">
+            <a class="page-link" href="#">{{page}} <span class="sr-only">(current)</span></a>
+                {%elif filter and pk%}
+                <li class="page-item"><a class="page-link" href="{%url 'category' pk page%}?q={{filter}}">{{page}}</a></li>
+        {%elif filter%}
+            <li class="page-item"><a class="page-link" href="{%url 'main_page' page%}?q={{filter}}">{{page}}</a></li>
+        {%elif pk%}
+             <li class="page-item"><a class="page-link" href="{%url 'category' pk=pk number_page=page%}">{{page}}</a></li>
+        {%else%}
+            <li class="page-item"><a class="page-link" href="{%url 'main_page' page%}">{{page}}</a></li>
+        {%endif%}
+
+      {%endfor%}
+
+      {%if stuff.has_next%}
+        {%if filter%}
+                <li class="page-item"><a class="page-link" href="{%url 'main_page' stuff.next_page_number%}?q={{filter}}">Вперед</a></li>
+            {%elif pk%}
+                <li class="page-item"><a class="page-link" href="{%url 'category' pk=pk number_page=stuff.next_page_number%}">Вперед</a></li>
+            {%else%}
+             <li class="page-item"><a class="page-link" href="{%url 'main_page' stuff.next_page_number%}">Вперед</a></li>
+        {%endif%}
+        {%else%}
+            <li class="page-item disabled">
+                <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Вперед</a>
+             </li>
+      {%endif%}
+
+  </ul>
+</nav>
+
+
+</body>
+</html>
