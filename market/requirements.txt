@@ -1,0 +1,4 @@
+Django==2.2.4
+MySQL==8.0
+gunicorn==19.9.0
+django-heroku==0.3.1

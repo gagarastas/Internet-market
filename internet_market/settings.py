@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/2.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.2/ref/settings/
 """
-
+import django_heroku
 import os
 _PATH=os.path.abspath(os.path.dirname(__file__))
 
@@ -21,10 +21,11 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'hkd2*4w*7^u=52qymc$-&u!j^408&bimw_%e(jsp&p&6)tk=h4'
-
+#SECRET_KEY = 'hkd2*4w*7^u=52qymc$-&u!j^408&bimw_%e(jsp&p&6)tk=h4'
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'cg#p$g+j9tax!#a3cup@1$8obt2_+&k3q+pmu)5%asj6yjpkag')
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+#DEBUG = True
+DEBUG = bool( os.getenv('DEBUG', True) )
 
 ALLOWED_HOSTS = []
 
@@ -132,3 +133,5 @@ LOGIN_URL ='/login/'
 MEDIA_URL='/media/'
 MEDIA_ROOT=os.path.join(_PATH,'media')
 STATICFILES_DIRS = (os.path.join(BASE_DIR, "static", ),)
+
+django_heroku.settings(locals())
