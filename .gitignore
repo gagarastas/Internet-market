@@ -1,8 +1,6 @@
 *.pyc 
 *.map
 *.xml
-*.jpg
-*.jpeg
 *.png
 __init__.py
 *.iml
